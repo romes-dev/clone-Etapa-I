@@ -15,6 +15,30 @@
         </div>
     </div>
 
+    <!-- Card de Cotações -->
+    <div class="col-md-4 mb-3">
+        <div class="card border-0 bg-info text-white">
+            <div class="card-body text-center">
+                <h6 class="card-title">Cotação do Dia</h6>
+                {% if cotacoes %}
+                <div class="d-flex justify-content-around mt-1">
+                    <div class="text-center">
+                        <small class="text-muted">Dólar</small>
+                        <h5 class="fw-bold">R$ {{ cotacoes.dolar|floatformat:2 }}</h5>
+                    </div>
+                    <div class="text-center">
+                        <small class="text-muted">Euro</small>
+                        <h5 class="fw-bold">R$ {{ cotacoes.euro|floatformat:2 }}</h5>
+                    </div>
+                    <small class="opacity-75 mt-2 d-block">Fonte: Awesome API</small>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0 text-center">Cotação não disponível.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
     <!-- Resumo por Categoria -->
     <div class="col-md-8 mb-3">
         <div class="card">
