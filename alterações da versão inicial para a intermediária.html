@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alterações — Versão Inicial → Intermediária</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      line-height: 1.7;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: #fff;
+      padding: 48px 32px 40px;
+      text-align: center;
+    }
+    header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
+    header p  { margin-top: 10px; opacity: .75; font-size: .95rem; }
+    .badge-version {
+      display: inline-block;
+      margin-top: 18px;
+      background: #e94560;
+      color: #fff;
+      font-size: .8rem;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 20px;
+      letter-spacing: .5px;
+    }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── SECTION TITLES ── */
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0f3460;
+      margin: 48px 0 20px;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #e94560;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title .icon {
+      background: #e94560;
+      color: #fff;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f3460;
+      margin-bottom: 12px;
+    }
+    .card p, .card li { font-size: .93rem; color: #444; }
+    .card ul, .card ol { padding-left: 20px; }
+    .card li { margin-bottom: 6px; }
+
+    /* ── TAGS ── */
+    .tag {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 20px;
+      margin-left: 8px;
+      vertical-align: middle;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    .tag-new      { background: #d4edda; color: #155724; }
+    .tag-modified { background: #fff3cd; color: #856404; }
+    .tag-fixed    { background: #f8d7da; color: #721c24; }
+
+    /* ── FILE BLOCK ── */
+    .file-block {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .file-header {
+      background: #1a1a2e;
+      color: #e2e8f0;
+      padding: 12px 20px;
+      font-size: .85rem;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .file-header .path { color: #63b3ed; }
+    .file-body { padding: 20px 24px; }
+    .file-body p, .file-body li { font-size: .92rem; color: #444; }
+    .file-body ul { padding-left: 20px; }
+    .file-body li { margin-bottom: 8px; }
+
+    /* ── CODE BLOCK ── */
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 18px;
+      font-size: .82rem;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      overflow-x: auto;
+      margin: 12px 0;
+      line-height: 1.6;
+    }
+    code {
+      background: #e8edf5;
+      color: #c0392b;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: .82rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+    /* ── DIFF ── */
+    .diff-line-add { color: #68d391; }
+    .diff-line-rem { color: #fc8181; }
+    .diff-line-ctx { color: #94a3b8; }
+
+    /* ── STEP LIST ── */
+    .steps { counter-reset: step; }
+    .step {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      padding: 22px 24px 22px 70px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      width: 36px; height: 36px;
+      background: #e94560;
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .step h3 { font-size: 1rem; font-weight: 700; color: #0f3460; margin-bottom: 10px; }
+    .step p, .step li { font-size: .92rem; color: #444; }
+    .step ul, .step ol { padding-left: 18px; margin-top: 8px; }
+    .step li { margin-bottom: 6px; }
+
+    /* ── SUMMARY TABLE ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+    }
+    th {
+      background: #0f3460;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+    td { padding: 10px 14px; border-bottom: 1px solid #e8edf5; }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #f8fafc; }
+
+    /* ── ALERT ── */
+    .alert {
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: .9rem;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .alert-info    { background: #ebf8ff; border-left: 4px solid #3182ce; color: #2a4365; }
+    .alert-warning { background: #fffbeb; border-left: 4px solid #d69e2e; color: #744210; }
+    .alert-success { background: #f0fff4; border-left: 4px solid #38a169; color: #22543d; }
+    .alert .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 32px;
+      font-size: .82rem;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════ HEADER -->
+<header>
+  <h1>Controle de Gastos Pessoais</h1>
+  <p>Documentação de alterações entre a Etapa Inicial e a Etapa Intermediária do BootCamp</p>
+  <span class="badge-version">v1.0.0 → v1.1.0</span>
+</header>
+
+<main>
+
+  <!-- ══════════════════════════════════════════════ VISÃO GERAL -->
+  <div class="section-title">
+    <div class="icon">📋</div>
+    Visão Geral das Mudanças
+  </div>
+
+  <div class="card">
+    <p>
+      A Etapa Intermediária evoluiu a aplicação de um CRUD local para um sistema conectado à
+      internet, com deploy público e cobertura de testes de integração. A tabela abaixo resume
+      todos os arquivos afetados.
+    </p>
+    <br />
+    <table>
+      <thead>
+        <tr>
+          <th>Arquivo</th>
+          <th>Status</th>
+          <th>O que mudou</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>gastos/services.py</code></td>
+          <td><span class="tag tag-new">Novo</span></td>
+          <td>Integração com a AwesomeAPI de cotações de moeda</td>
+        </tr>
+        <tr>
+          <td><code>gastos/views.py</code></td>
+          <td><span class="tag tag-modified">Modificado</span></td>
+          <td>Chama <code>buscar_cotacoes()</code> e passa resultado ao template</td>
+        </tr>
+        <tr>
+          <td><code>gastos/templates/gastos/index.html</code></td>
+          <td><span class="tag tag-modified">Modificado</span></td>
+          <td>Card "Cotações do Dia" + layout ajustado para 3 colunas</td>
+        </tr>
+        <tr>
+          <td><code>tests/test_integracao.py</code></td>
+          <td><span class="tag tag-new">Novo</span></td>
+          <td>2 testes de integração para validar a comunicação com a API</td>
+        </tr>
+        <tr>
+          <td><code>gastos/migrations/0001_initial.py</code></td>
+          <td><span class="tag tag-fixed">Corrigido</span></td>
+          <td>Migração inicial criada (estava ausente — causava erro no banco)</td>
+        </tr>
+        <tr>
+          <td><code>requirements.txt</code></td>
+          <td><span class="tag tag-modified">Modificado</span></td>
+          <td>Adicionadas bibliotecas <code>requests</code> e <code>gunicorn</code></td>
+        </tr>
+        <tr>
+          <td><code>Procfile</code></td>
+          <td><span class="tag tag-new">Novo</span></td>
+          <td>Instrução de start para o Railway (deploy em nuvem)</td>
+        </tr>
+        <tr>
+          <td><code>config/settings.py</code></td>
+          <td><span class="tag tag-modified">Modificado</span></td>
+          <td>Adicionado <code>STATIC_ROOT</code> para deploy em produção</td>
+        </tr>
+        <tr>
+          <td><code>README.md</code></td>
+          <td><span class="tag tag-modified">Modificado</span></td>
+          <td>Conteúdo real do projeto substituindo os placeholders do template</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════ ARQUIVOS NOVOS -->
+  <div class="section-title">
+    <div class="icon">✨</div>
+    Arquivos Novos
+  </div>
+
+  <!-- services.py -->
+  <div class="file-block">
+    <div class="file-header">
+      <span class="path">gastos/services.py</span>
+      <span class="tag tag-new">Novo</span>
+    </div>
+    <div class="file-body">
+      <p>
+        Centraliza a comunicação com serviços externos. A função <code>buscar_cotacoes()</code>
+        faz uma requisição HTTP GET para a <strong>AwesomeAPI</strong> e retorna um dicionário
+        com a cotação do Dólar e do Euro em Reais. Se a API estiver fora do ar ou a conexão
+        falhar, retorna <code>None</code> silenciosamente — o template exibe uma mensagem
+        amigável em vez de quebrar a página.
+      </p>
+      <pre><code><span class="diff-line-add">"""Serviços externos do app de gastos."""
+
+import requests
+
+AWESOMEAPI_URL = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL"
+
+
+def buscar_cotacoes():
+    """Busca cotação atual do dólar e euro em reais via AwesomeAPI."""
+    try:
+        response = requests.get(AWESOMEAPI_URL, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        return {
+            "dolar": float(data["USDBRL"]["bid"]),
+            "euro": float(data["EURBRL"]["bid"]),
+        }
+    except Exception:
+        return None</span></code></pre>
+      <ul>
+        <li><strong>URL da API:</strong> <code>https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL</code> — retorna a última cotação do Dólar e Euro em JSON.</li>
+        <li><strong>timeout=5:</strong> evita que a página trave caso a API demore mais de 5 segundos para responder.</li>
+        <li><strong>raise_for_status():</strong> lança exceção se a API retornar um código de erro HTTP (4xx/5xx).</li>
+        <li><strong>except Exception → return None:</strong> garante que qualquer falha de rede não quebre a aplicação.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- test_integracao.py -->
+  <div class="file-block">
+    <div class="file-header">
+      <span class="path">tests/test_integracao.py</span>
+      <span class="tag tag-new">Novo</span>
+    </div>
+    <div class="file-body">
+      <p>
+        Contém os <strong>testes de integração</strong> que validam o fluxo de dados entre a
+        aplicação e a API externa. Os testes usam <code>unittest.mock.patch</code> para
+        <em>simular</em> a resposta da API sem depender de internet — isso garante que o CI
+        (GitHub Actions) passe mesmo em ambientes sem acesso à web.
+      </p>
+      <pre><code><span class="diff-line-add">"""Teste de integração: valida comunicação com a AwesomeAPI de cotações."""
+
+from unittest.mock import Mock, patch
+
+from gastos.services import buscar_cotacoes
+
+
+def test_buscar_cotacoes_retorna_dolar_e_euro():
+    """Verifica que a função processa corretamente a resposta da API."""
+    mock_response = Mock()
+    mock_response.raise_for_status.return_value = None
+    mock_response.json.return_value = {
+        "USDBRL": {"bid": "5.20"},
+        "EURBRL": {"bid": "5.80"},
+    }
+
+    with patch("gastos.services.requests.get", return_value=mock_response):
+        resultado = buscar_cotacoes()
+
+    assert resultado is not None
+    assert resultado["dolar"] == 5.20
+    assert resultado["euro"] == 5.80
+
+
+def test_buscar_cotacoes_retorna_none_em_falha():
+    """Verifica que a função retorna None quando a API está indisponível."""
+    with patch("gastos.services.requests.get", side_effect=Exception("Erro de rede")):
+        resultado = buscar_cotacoes()
+
+    assert resultado is None</span></code></pre>
+      <ul>
+        <li><strong>Teste 1 — Sucesso:</strong> simula uma resposta válida da API e verifica se os valores de Dólar e Euro são extraídos corretamente.</li>
+        <li><strong>Teste 2 — Falha:</strong> simula uma exceção de rede e verifica se a função retorna <code>None</code> sem lançar erro.</li>
+        <li><strong>Por que mock?</strong> O CI roda em servidores do GitHub que podem não ter acesso à AwesomeAPI. O mock garante que os testes sempre passem independentemente da conectividade.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Procfile -->
+  <div class="file-block">
+    <div class="file-header">
+      <span class="path">Procfile</span>
+      <span class="tag tag-new">Novo</span>
+    </div>
+    <div class="file-body">
+      <p>
+        Arquivo lido pelo <strong>Railway</strong> (plataforma de deploy) para saber como
+        iniciar a aplicação em produção. Em vez do servidor de desenvolvimento do Django
+        (<code>runserver</code>), usamos o <strong>Gunicorn</strong>, um servidor
+        WSGI robusto e adequado para produção.
+      </p>
+      <pre><code><span class="diff-line-add">web: gunicorn config.wsgi --bind 0.0.0.0:$PORT</span></code></pre>
+      <ul>
+        <li><strong>gunicorn config.wsgi:</strong> aponta para o arquivo WSGI em <code>config/wsgi.py</code>.</li>
+        <li><strong>--bind 0.0.0.0:$PORT:</strong> a variável <code>$PORT</code> é definida automaticamente pelo Railway.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- migrations -->
+  <div class="file-block">
+    <div class="file-header">
+      <span class="path">gastos/migrations/0001_initial.py</span>
+      <span class="tag tag-fixed">Corrigido — estava ausente</span>
+    </div>
+    <div class="file-body">
+      <div class="alert alert-warning">
+        <span class="icon">⚠️</span>
+        <span>
+          Este arquivo <strong>não existia</strong> na versão inicial do repositório clonado.
+          A ausência causava o erro <code>no such table: gastos_despesa</code> ao tentar
+          acessar a aplicação. Ele foi gerado com <code>python manage.py makemigrations gastos</code>
+          e aplicado com <code>python manage.py migrate</code>.
+        </span>
+      </div>
+      <p>
+        O arquivo descreve a criação da tabela <code>gastos_despesa</code> no banco de dados
+        SQLite com todos os seus campos: <code>id</code>, <code>descricao</code>,
+        <code>valor</code>, <code>categoria</code>, <code>data</code> e <code>criado_em</code>.
+      </p>
+      <ul>
+        <li><strong>Comando para gerar:</strong> <code>python manage.py makemigrations gastos</code></li>
+        <li><strong>Comando para aplicar:</strong> <code>python manage.py migrate</code></li>
+        <li>Deve ser incluído no commit junto com os outros arquivos.</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════ ARQUIVOS MODIFICADOS -->
+  <div class="section-title">
+    <div class="icon">✏️</div>
+    Arquivos Modificados
+  </div>
+
+  <!-- views.py -->
+  <div class="file-block">
+    <div class="file-header">
+      <span class="path">gastos/views.py</span>
+      <span class="tag tag-modified">Modificado</span>
+    </div>
+    <div class="file-body">
+      <p>Duas linhas foram adicionadas à função <code>index()</code>:</p>
+      <pre><code><span class="diff-line-ctx">  from .forms import DespesaForm
+  from .models import CATEGORIAS, Despesa</span>
+<span class="diff-line-add">+ from .services import buscar_cotacoes</span>
+
+<span class="diff-line-ctx">  context = {
+      "despesas": despesas,
+      "total": total,
+      "resumo": resumo,
+      "categorias": CATEGORIAS,
+      "categoria_filtro": categoria_filtro,
+      "mes_atual": timezone.now().strftime("%B de %Y"),</span>
+<span class="diff-line-add">+     "cotacoes": buscar_cotacoes(),</span>
+<span class="diff-line-ctx">  }</span></code></pre>
+      <ul>
+        <li>A linha de import conecta a view ao novo módulo <code>services.py</code>.</li>
+        <li>A chave <code>"cotacoes"</code> no contexto disponibiliza os dados da API para o template.</li>
+        <li>Nenhuma outra view foi alterada — Adicionar, Editar e Excluir permanecem idênticas.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- index.html -->
+  <div class="file-block">
+    <div class="file-header">
+      <span class="path">gastos/templates/gastos/index.html</span>
+      <span class="tag tag-modified">Modificado</span>
+    </div>
+    <div class="file-body">
+      <p>Duas alterações foram feitas no template:</p>
+
+      <h3 style="margin-top:16px;">1. Card "Cotações do Dia" (adicionado)</h3>
+      <p>Inserido entre o card "Total de Despesas" e o "Resumo por Categoria":</p>
+      <pre><code><span class="diff-line-add">+   &lt;!-- Card Cotações --&gt;
++   &lt;div class="col-md-4 mb-3"&gt;
++     &lt;div class="card border-0 bg-primary text-white"&gt;
++       &lt;div class="card-body text-center"&gt;
++         &lt;h6 class="card-title"&gt;Cotações do Dia&lt;/h6&gt;
++         {% if cotacoes %}
++           &lt;div class="d-flex justify-content-around mt-1"&gt;
++             &lt;div&gt;
++               &lt;small class="d-block opacity-75"&gt;Dólar&lt;/small&gt;
++               &lt;strong&gt;R$ {{ cotacoes.dolar|floatformat:2 }}&lt;/strong&gt;
++             &lt;/div&gt;
++             &lt;div&gt;
++               &lt;small class="d-block opacity-75"&gt;Euro&lt;/small&gt;
++               &lt;strong&gt;R$ {{ cotacoes.euro|floatformat:2 }}&lt;/strong&gt;
++             &lt;/div&gt;
++           &lt;/div&gt;
++           &lt;small class="opacity-75 mt-1 d-block"&gt;Fonte: AwesomeAPI&lt;/small&gt;
++         {% else %}
++           &lt;small class="opacity-75"&gt;Cotações indisponíveis&lt;/small&gt;
++         {% endif %}
++       &lt;/div&gt;
++     &lt;/div&gt;
++   &lt;/div&gt;</span></code></pre>
+
+      <h3 style="margin-top:16px;">2. Ajuste de largura do "Resumo por Categoria"</h3>
+      <p>Com a adição do terceiro card, o layout de 2 colunas virou 3 colunas iguais:</p>
+      <pre><code><span class="diff-line-rem">- &lt;div class="col-md-8 mb-3"&gt;</span>
+<span class="diff-line-add">+ &lt;div class="col-md-4 mb-3"&gt;</span></code></pre>
+    </div>
+  </div>
+
+  <!-- requirements.txt -->
+  <div class="file-block">
+    <div class="file-header">
+      <span class="path">requirements.txt</span>
+      <span class="tag tag-modified">Modificado</span>
+    </div>
+    <div class="file-body">
+      <pre><code><span class="diff-line-ctx">  Django&gt;=4.2,&lt;5.0</span>
+<span class="diff-line-add">+ requests&gt;=2.31.0
++ gunicorn&gt;=21.0.0</span>
+<span class="diff-line-ctx">  ruff&gt;=0.4.0
+  pytest&gt;=8.0.0
+  pytest-django&gt;=4.8</span></code></pre>
+      <ul>
+        <li><strong>requests:</strong> biblioteca para fazer requisições HTTP — usada em <code>services.py</code>.</li>
+        <li><strong>gunicorn:</strong> servidor web WSGI para rodar a aplicação em produção (Railway).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- settings.py -->
+  <div class="file-block">
+    <div class="file-header">
+      <span class="path">config/settings.py</span>
+      <span class="tag tag-modified">Modificado</span>
+    </div>
+    <div class="file-body">
+      <pre><code><span class="diff-line-ctx">  STATIC_URL = "static/"</span>
+<span class="diff-line-add">+ STATIC_ROOT = BASE_DIR / "staticfiles"</span>
+<span class="diff-line-ctx">  DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"</span></code></pre>
+      <ul>
+        <li><code>STATIC_ROOT</code> é obrigatório para rodar <code>collectstatic</code> em produção — sem ele, o Gunicorn não sabe onde salvar os arquivos estáticos.</li>
+        <li>O restante do <code>settings.py</code> já estava configurado para leitura de variáveis de ambiente (<code>SECRET_KEY</code>, <code>DEBUG</code>, <code>ALLOWED_HOSTS</code>), então nenhuma outra alteração foi necessária.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- README.md -->
+  <div class="file-block">
+    <div class="file-header">
+      <span class="path">README.md</span>
+      <span class="tag tag-modified">Modificado</span>
+    </div>
+    <div class="file-body">
+      <p>O README do template tinha campos genéricos como <code>seu-usuario</code> e <code>seu-repositorio</code>. Ele foi reescrito com:</p>
+      <ul>
+        <li>Link do deploy no topo (a ser atualizado após publicar no Railway).</li>
+        <li>Descrição real do problema, proposta de solução e público-alvo.</li>
+        <li>Lista atualizada de funcionalidades incluindo as cotações.</li>
+        <li>Tecnologias atualizadas (<code>requests</code>, <code>gunicorn</code>, Railway).</li>
+        <li>Links reais do repositório: <code>github.com/romes-dev/clone-Etapa-I</code>.</li>
+      </ul>
+      <div class="alert alert-info">
+        <span class="icon">ℹ️</span>
+        <span>Após concluir o deploy no Railway, substitua o placeholder <code>[link-do-deploy-aqui](#)</code>
+        pela URL pública real da aplicação.</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════ PASSO A PASSO -->
+  <div class="section-title">
+    <div class="icon">🚀</div>
+    Passo a Passo Completo para Entregar a Etapa Intermediária
+  </div>
+
+  <div class="alert alert-info" style="margin-bottom:24px;">
+    <span class="icon">ℹ️</span>
+    <span>
+      Os <strong>Passos 1 a 4</strong> já foram executados pelo assistente na sua máquina local.
+      Você precisa realizar os <strong>Passos 5 em diante</strong>.
+    </span>
+  </div>
+
+  <div class="steps">
+
+    <div class="step">
+      <h3>Criar a Issue no GitHub ✅ (pendente — você faz)</h3>
+      <p>Acesse o repositório no GitHub e crie uma nova Issue com:</p>
+      <ul>
+        <li><strong>Título:</strong> Integração com API de cotações de moedas</li>
+        <li><strong>Descrição:</strong> Adicionar widget na dashboard que exibe as cotações atuais do dólar e euro em reais, consumindo a AwesomeAPI (economia.awesomeapi.com.br). Isso agrega valor ao controle de gastos, permitindo acompanhar variações cambiais.</li>
+        <li>Após criar, anote o número da Issue (ex: <strong>#1</strong>). Ele será referenciado no commit.</li>
+      </ul>
+      <p style="margin-top:10px;">URL para criar: <code>github.com/romes-dev/clone-Etapa-I/issues/new</code></p>
+    </div>
+
+    <div class="step">
+      <h3>Branch criada ✅ (já feito pelo assistente)</h3>
+      <p>O assistente já criou e ativou a branch <code>entrega-intermediaria</code> a partir da <code>main</code>:</p>
+      <pre><code>git checkout -b entrega-intermediaria</code></pre>
+      <p>Todos os arquivos desta documentação já estão nessa branch na sua máquina.</p>
+    </div>
+
+    <div class="step">
+      <h3>Código implementado ✅ (já feito pelo assistente)</h3>
+      <p>Os seguintes arquivos foram criados ou modificados:</p>
+      <ul>
+        <li><code>gastos/services.py</code> — integração com a AwesomeAPI</li>
+        <li><code>gastos/views.py</code> — passa cotações para o template</li>
+        <li><code>gastos/templates/gastos/index.html</code> — card de cotações na dashboard</li>
+        <li><code>tests/test_integracao.py</code> — 2 testes de integração (mock)</li>
+        <li><code>gastos/migrations/0001_initial.py</code> — migração do banco corrigida</li>
+        <li><code>requirements.txt</code> — adicionados requests e gunicorn</li>
+        <li><code>Procfile</code> — configuração de deploy</li>
+        <li><code>config/settings.py</code> — STATIC_ROOT adicionado</li>
+        <li><code>README.md</code> — conteúdo real do projeto</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <h3>Lint e testes verificados ✅ (já feito pelo assistente)</h3>
+      <p>Resultados confirmados na máquina local:</p>
+      <pre><code>ruff check .   # All checks passed!
+pytest         # 5 passed, 0 failed</code></pre>
+    </div>
+
+    <div class="step">
+      <h3>Fazer commit e push da branch (você faz agora)</h3>
+      <p>No terminal, dentro da pasta do projeto:</p>
+      <pre><code>cd "c:\Users\User\Repositórios\clone-Etapa-I"
+
+git add gastos/services.py
+git add gastos/views.py
+git add "gastos/templates/gastos/index.html"
+git add tests/test_integracao.py
+git add gastos/migrations/
+git add requirements.txt
+git add Procfile
+git add config/settings.py
+git add README.md
+git add "alterações da versão inicial para a intermediária.html"
+
+git commit -m "feat: integração com AwesomeAPI de cotações (closes #1)"
+
+git push -u origin entrega-intermediaria</code></pre>
+      <div class="alert alert-warning">
+        <span class="icon">⚠️</span>
+        <span>Substitua <code>#1</code> pelo número real da Issue que você criou no Passo 1.
+        A palavra-chave <code>closes</code> faz o GitHub fechar a Issue automaticamente quando o PR for mergeado.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <h3>Abrir o Pull Request no GitHub (você faz)</h3>
+      <ol>
+        <li>Acesse <code>github.com/romes-dev/clone-Etapa-I</code></li>
+        <li>O GitHub mostrará um banner "<strong>Compare &amp; pull request</strong>" para a branch <code>entrega-intermediaria</code> — clique nele.</li>
+        <li>Base: <code>main</code> ← Compare: <code>entrega-intermediaria</code></li>
+        <li>No corpo do PR, escreva: <code>closes #1</code> (ou o número da sua Issue)</li>
+        <li>Clique em <strong>Create pull request</strong></li>
+        <li>Aguarde o CI do GitHub Actions rodar e ficar verde ✅</li>
+        <li>Clique em <strong>Merge pull request</strong> → <strong>Confirm merge</strong></li>
+      </ol>
+      <div class="alert alert-success">
+        <span class="icon">✅</span>
+        <span>Após o merge, a Issue será fechada automaticamente e o código estará na branch <code>main</code>.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <h3>Deploy no Railway (você faz)</h3>
+      <ol>
+        <li>Acesse <strong>railway.app</strong> e faça login com sua conta do GitHub.</li>
+        <li>Clique em <strong>New Project</strong> → <strong>Deploy from GitHub repo</strong>.</li>
+        <li>Selecione o repositório <code>clone-Etapa-I</code>.</li>
+        <li>Railway detecta automaticamente que é Python e usa o <code>Procfile</code>.</li>
+        <li>
+          Vá em <strong>Variables</strong> e adicione as seguintes variáveis de ambiente:
+          <pre><code>DJANGO_SECRET_KEY   = (gere uma chave longa e aleatória)
+DJANGO_DEBUG        = false
+DJANGO_ALLOWED_HOSTS = seu-app.up.railway.app</code></pre>
+        </li>
+        <li>Antes do primeiro deploy, Railway precisa rodar as migrações. Vá em <strong>Settings → Deploy</strong> e adicione o comando de build:<br/>
+          <code>python manage.py migrate</code>
+        </li>
+        <li>Clique em <strong>Deploy</strong> e aguarde. Railway mostrará os logs em tempo real.</li>
+        <li>Ao concluir, copie a URL pública (ex: <code>https://clone-etapa-i.up.railway.app</code>).</li>
+      </ol>
+      <div class="alert alert-info">
+        <span class="icon">ℹ️</span>
+        <span>Para gerar uma <code>DJANGO_SECRET_KEY</code> segura, execute no terminal:<br/>
+        <code>python -c "import secrets; print(secrets.token_hex(50))"</code></span>
+      </div>
+    </div>
+
+    <div class="step">
+      <h3>Atualizar o README com o link do deploy (você faz)</h3>
+      <p>Abra o arquivo <code>README.md</code> e substitua a linha:</p>
+      <pre><code><span class="diff-line-rem">- **Acesse a aplicação:** [link-do-deploy-aqui](#) *(atualizar após o deploy no Railway)*</span>
+<span class="diff-line-add">+ **Acesse a aplicação:** [Controle de Gastos](https://clone-etapa-i.up.railway.app)</span></code></pre>
+      <p>Depois commite e faça push direto na <code>main</code>:</p>
+      <pre><code>git add README.md
+git commit -m "docs: adiciona link do deploy no README"
+git push origin main</code></pre>
+    </div>
+
+    <div class="step">
+      <h3>Gerar o PDF de entrega (você faz)</h3>
+      <p>O PDF deve conter:</p>
+      <ul>
+        <li><strong>Identificação:</strong> Nome completo, matrícula, turma</li>
+        <li><strong>Link do repositório:</strong> <code>https://github.com/romes-dev/clone-Etapa-I</code></li>
+        <li><strong>Link da aplicação publicada:</strong> URL gerada pelo Railway</li>
+      </ul>
+      <p>Dica rápida: abra este arquivo HTML no navegador, adicione as informações em um editor de texto simples e use <strong>Ctrl+P → Salvar como PDF</strong>.</p>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════ CHECKLIST -->
+  <div class="section-title">
+    <div class="icon">☑️</div>
+    Checklist Final — Barema de Avaliação
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Critério</th>
+          <th>Peso</th>
+          <th>O que foi feito</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Integração com API Pública</td>
+          <td>25%</td>
+          <td>AwesomeAPI exibindo cotação do Dólar e Euro na dashboard</td>
+          <td>✅ Feito</td>
+        </tr>
+        <tr>
+          <td>Uso de Issue e Branch</td>
+          <td>20%</td>
+          <td>Branch <code>entrega-intermediaria</code> criada + Issue a criar + PR a abrir</td>
+          <td>⏳ Pendente (Passos 1 e 6)</td>
+        </tr>
+        <tr>
+          <td>Teste de Integração</td>
+          <td>20%</td>
+          <td>2 testes em <code>tests/test_integracao.py</code> — todos passando</td>
+          <td>✅ Feito</td>
+        </tr>
+        <tr>
+          <td>Deploy / Publicação</td>
+          <td>20%</td>
+          <td>Procfile e configurações prontas — deploy a realizar no Railway</td>
+          <td>⏳ Pendente (Passo 7)</td>
+        </tr>
+        <tr>
+          <td>CI/CD e README</td>
+          <td>10%</td>
+          <td>GitHub Actions verde + README atualizado (link do deploy a inserir)</td>
+          <td>⏳ Pendente (Passos 6 e 8)</td>
+        </tr>
+        <tr>
+          <td>PDF de Entrega</td>
+          <td>5%</td>
+          <td>PDF com identificação, link do repositório e link do deploy</td>
+          <td>⏳ Pendente (Passo 9)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>
+  Gerado em 04/05/2026 · Controle de Gastos Pessoais v1.1.0 · BootCamp — Etapa Intermediária
+</footer>
+
+</body>
+</html>

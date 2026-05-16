@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from .forms import DespesaForm
 from .models import CATEGORIAS, Despesa
+from .services import buscar_cotacoes
 
 
 def index(request):
@@ -40,6 +41,7 @@ def index(request):
         "categorias": CATEGORIAS,
         "categoria_filtro": categoria_filtro,
         "mes_atual": timezone.now().strftime("%B de %Y"),
+        "cotacoes": buscar_cotacoes(),
     }
     return render(request, "gastos/index.html", context)
 
