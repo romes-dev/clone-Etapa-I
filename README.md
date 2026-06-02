@@ -1,42 +1,48 @@
-# Nome do Projeto
+# Controle de Gastos Pessoais
 
-![CI](https://github.com/seu-usuario/seu-repositorio/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/romes-dev/clone-Etapa-I/actions/workflows/ci.yml/badge.svg)
+
+**Acesse a aplicação:** [link-do-deploy-aqui](#) *(atualizar após o deploy no Railway)*
 
 ## Descrição do Problema
 
-Descreva aqui a dor real que sua aplicação resolve. Seja específico: quem sofre com esse problema, em que contexto ele ocorre e qual o impacto.
+Muitas pessoas têm dificuldade em acompanhar para onde vai o seu dinheiro ao longo do mês. Sem um registro organizado, gastos com alimentação, transporte e lazer passam despercebidos, dificultando o planejamento financeiro pessoal.
 
 ## Proposta de Solução
 
-Explique como sua aplicação ajuda a resolver ou amenizar o problema descrito acima.
+Aplicação web que permite registrar, categorizar e visualizar despesas pessoais de forma simples. Exibe um resumo por categoria, o total gasto no mês e as cotações atuais do dólar e euro para referência.
 
 ## Público-alvo
 
-Descreva quem são os usuários da aplicação (ex: estudantes, idosos, microempreendedores, cuidadores etc.).
+Pessoas que desejam controlar seus gastos pessoais e ter uma visão clara de suas finanças mensais.
 
 ## Funcionalidades
 
-- Listar ...
-- Adicionar ...
-- Editar ...
-- Excluir ...
-- Filtrar por ...
+- Listar todas as despesas com filtro por categoria
+- Adicionar novas despesas com descrição, valor, categoria e data
+- Editar despesas existentes
+- Excluir despesas
+- Visualizar resumo de gastos por categoria
+- Exibir cotações do dólar e euro em tempo real (via AwesomeAPI)
 
 ## Tecnologias Utilizadas
 
 - Python 3.13
 - Django 4.2
 - SQLite
+- requests (integração com API externa)
+- gunicorn (servidor de produção)
 - pytest / pytest-django
 - ruff
-- GitHub Actions
+- GitHub Actions (CI)
+- Railway (Deploy)
 
 ## Instalação
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/seu-repositorio.git
-cd seu-repositorio
+git clone https://github.com/romes-dev/clone-Etapa-I.git
+cd clone-Etapa-I
 
 # Crie e ative o ambiente virtual
 python -m venv .venv
@@ -49,29 +55,32 @@ pip install -r requirements.txt
 # Execute as migrações
 python manage.py migrate
 
-#Execução
-
+# Inicie o servidor
 python manage.py runserver
+```
 
 Acesse em: http://127.0.0.1:8000
 
-#Testes
+## Testes
 
+```bash
 pytest
+```
 
-#Lint
+## Lint
 
+```bash
 ruff check .
+```
 
-# Versão
-1.0.0
+## Versão
 
-# Autor
-Seu Nome — github.com/seu-usuario
+1.1.0
 
-# Repositório
-github.com/seu-usuario/seu-repositorio
+## Autor
 
+Romes Heriberto — [github.com/romes-dev](https://github.com/romes-dev)
 
+## Repositório
 
-Substitua os campos marcados com `seu-usuario`, `seu-repositorio` e os demais placeholders com os dados do seu projeto.
+[github.com/romes-dev/clone-Etapa-I](https://github.com/romes-dev/clone-Etapa-I)
